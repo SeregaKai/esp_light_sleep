@@ -30,7 +30,7 @@
 #include "freertos/task.h"
 
 
-#define time_s  30
+#define time_s  60
 void wakeup_handler(void)
 {
 wifi_fpm_close();

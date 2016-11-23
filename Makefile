@@ -1,13 +1,3 @@
-#############################################################
-#
-# Root Level Makefile 
-#
-# Version 2.0
-#
-# (c) by CHERTS <sleuthhound@gmail.com>
-#
-#############################################################
-
 BUILD_BASE	= build
 FW_BASE		= firmware
 
@@ -15,7 +5,7 @@ FW_BASE		= firmware
 XTENSA_TOOLS_ROOT ?= c:/Espressif/xtensa-lx106-elf/bin
 
 # base directory of the ESP8266 SDK package, absolute
-SDK_BASE	?= c:/ESPFolder/workspace/rtos_sleep/ESP8266_RTOS_SDK
+SDK_BASE	?= c:/ESPFolder/workspace/esp_light_sleep/ESP8266_RTOS_SDK
 SDK_TOOLS	?= c:/Espressif/utils/ESP8266
 
 # esptool path and port
@@ -179,8 +169,8 @@ endif
 TARGET = app
 
 # which modules (subdirectories) of the project to include in compiling
-MODULES	= source driver 
-EXTRA_INCDIR = include include/driver 
+MODULES	= source  
+#EXTRA_INCDIR = include 
 
 # libraries used in this project, mainly provided by the SDK
 LIBS = 	gcc	\
@@ -408,8 +398,6 @@ flashinit:
 	$(vecho) "Flash init data default and blank data."
 	$(ESPTOOL) -p $(ESPPORT) -b $(BAUD) write_flash $(flashimageoptions) $(init_addr) $(SDK_BASE)/bin/esp_init_data_default.bin \
 	$(blank_addr) $(SDK_BASE)/bin/blank.bin 
-	#0x73000 $(SDK_BASE)/../../cnts_7b.bin \
-	#0x76000 $(SDK_BASE)/../../time_7e.bin
 
 rebuild: clean all
 
