@@ -29,12 +29,17 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+xTaskHandle xSleepHnd;
 
-#define time_s  60
+#define time_s  15
+
+void ICACHE_FLASH_ATTR smartconfig_task(void *pvParameters);
+
 void wakeup_handler(void)
 {
-wifi_fpm_close();
-wifi_set_opmode(STATION_MODE);
+	wifi_fpm_close();
+	wifi_set_opmode(STATION_MODE);
+	xTaskCreate(smartconfig_task, "smartconfig_task", 256, NULL, 2, &xSleepHnd);
 }
 
 void ICACHE_FLASH_ATTR
@@ -42,12 +47,11 @@ smartconfig_task(void *pvParameters)
 {
     wifi_station_disconnect();
     wifi_set_opmode(NULL_MODE);
-     printf("sleep\n");
-wifi_fpm_set_sleep_type(LIGHT_SLEEP_T); // This API can only be called before wifi_fpm_open.
+    printf("sleep\n");
+    wifi_fpm_set_sleep_type(LIGHT_SLEEP_T); // This API can only be called before wifi_fpm_open.
     wifi_fpm_open(); // Force sleep function is disabled by default.
     wifi_fpm_set_wakeup_cb(wakeup_handler); //
     wifi_fpm_do_sleep(time_s*1000*1000);
-
 
     vTaskDelete(NULL);
 }
@@ -110,6 +114,6 @@ user_init(void)
     /* need to set opmode before you set config */
     wifi_set_opmode(STATION_MODE);
 
-    xTaskCreate(smartconfig_task, "smartconfig_task", 256, NULL, 2, NULL);
+    xTaskCreate(smartconfig_task, "smartconfig_task", 256, NULL, 2, &xSleepHnd);
 }
 
